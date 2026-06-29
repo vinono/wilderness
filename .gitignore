@@ -1,0 +1,13 @@
+# Node
+node_modules/
+dist/
+.npm/
+.vite/
+
+# macOS / Xcode
+.DS_Store
+build/
+DerivedData/
+.swiftpm/
+.build/
+.temp/
