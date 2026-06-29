@@ -1,0 +1,48 @@
+name: Monorepo CI Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 1. 验证 Web 前端构建
+  verify-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Install Dependencies
+        run: |
+          cd web
+          pnpm install
+
+      - name: Build Web Project
+        run: |
+          cd web
+          pnpm run build
+
+  # 2. 验证 Swift 后端单元测试
+  verify-swift:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Swift Unit Tests
+        run: |
+          cd macos
+          swiftc Sources/macos/FocusTimer.swift Sources/macos/BreathingManager.swift Tests/macosTests/main.swift -o test_runner
+          ./test_runner
